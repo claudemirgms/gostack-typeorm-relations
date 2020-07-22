@@ -8,7 +8,8 @@ import Order from '../infra/typeorm/entities/Order';
 import IOrdersRepository from '../repositories/IOrdersRepository';
 
 interface IProduct {
-  id: string;
+  product_id: string;
+  price: number;
   quantity: number;
 }
 
@@ -20,13 +21,34 @@ interface IRequest {
 @injectable()
 class CreateOrderService {
   constructor(
+    @inject('OrdersRepository')
     private ordersRepository: IOrdersRepository,
+    @inject('ProductsRepository')
     private productsRepository: IProductsRepository,
+    @inject('CustomersRepository')
     private customersRepository: ICustomersRepository,
   ) {}
 
   public async execute({ customer_id, products }: IRequest): Promise<Order> {
-    // TODO
+    const customer = await this.customersRepository.findById(customer_id);
+
+    if (!customer) {
+      throw new AppError('cliente não encontrado');
+    }
+
+    const order = await this.ordersRepository.create({ customer, products });
+
+    const Products = products.find(product => product.quantity === 0);
+
+    products.forEach(product => {
+      if (product) {
+        throw new AppError('produto sem estoque');
+      }
+    });
+
+    console.log(order);
+
+    return order;
   }
 }
 
