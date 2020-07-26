@@ -18,6 +18,16 @@ interface IRequest {
   products: IProduct[];
 }
 
+interface IProduct2 {
+  id: string;
+  price: number;
+  quantity: number;
+}
+
+interface IRequest2 {
+  customer_id: string;
+  products: IProduct2[];
+}
 @injectable()
 class CreateOrderService {
   constructor(
@@ -29,21 +39,40 @@ class CreateOrderService {
     private customersRepository: ICustomersRepository,
   ) {}
 
-  public async execute({ customer_id, products }: IRequest): Promise<Order> {
+  public async execute({ customer_id, products }: IRequest2): Promise<Order> {
     const customer = await this.customersRepository.findById(customer_id);
 
     if (!customer) {
       throw new AppError('cliente não encontrado');
     }
 
-    const order = await this.ordersRepository.create({ customer, products });
+    const array_products: IProduct[] = [];
 
-    const Products = products.find(product => product.quantity === 0);
+    // eslint-disable-next-line no-restricted-syntax
+    for (const product of products) {
+      const { id } = product;
 
-    products.forEach(product => {
-      if (product) {
-        throw new AppError('produto sem estoque');
+      // eslint-disable-next-line no-await-in-loop
+      const dado = await this.productsRepository.findById(id);
+
+      if (!dado) {
+        throw new AppError('produto não entrado');
       }
+      // console.log(dado);
+
+      if (dado.quantity < product.quantity) {
+        throw new AppError('sem produto em estoque');
+      }
+      array_products.push({
+        product_id: id,
+        price: dado.price,
+        quantity: product.quantity,
+      });
+    }
+
+    const order = await this.ordersRepository.create({
+      customer,
+      products: array_products,
     });
 
     console.log(order);

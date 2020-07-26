@@ -16,8 +16,10 @@ class OrdersRepository implements IOrdersRepository {
   }
 
   public async create({ customer, products }: ICreateOrderDTO): Promise<Order> {
+    console.log(products);
     const order = this.ormRepository.create({
       customer,
+      orders_products: products,
     });
 
     const order_products: OrdersProducts[] = [];
@@ -47,8 +49,42 @@ class OrdersRepository implements IOrdersRepository {
     return order;
   }
 
+  // public async create({ customer, products }: ICreateOrderDTO): Promise<Order> {
+  //   const order = this.ormRepository.create({
+  //     customer,
+  //     order_products: products.map(product => ({
+  //       ...product,
+  //       product_id: product.product_id,
+  //       quantity: product.quantity,
+  //       price: product.price, // Intl.NumberFormat('pt-br', {style: 'currency').format(product.price),
+  //     })),
+  //   });
+  //   // console.log(order);
+
+  //   await this.ormRepository.save(order);
+
+  //   // const orderProducts = this.opRepository.create({
+  //   //   order_id: order.id,
+  //   //   product: products,
+  //   // });
+
+  //   // await this.opRepository.save(orderProducts);
+
+  //   delete order.created_at;
+  //   delete order.updated_at;
+
+  //   delete order.customer_id;
+  //   delete order.customer.created_at;
+  //   delete order.customer.updated_at;
+
+  //   // order.order_products =
+
+  //   return order;
+  // }
+
   public async findById(id: string): Promise<Order | undefined> {
-    const order = this.ormRepository.findOne(id);
+    // console.log(id);
+    const order = await this.ormRepository.findOne({ where: { id } });
     return order;
   }
 }

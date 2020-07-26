@@ -11,7 +11,6 @@ import {
 
 import Customer from '@modules/customers/infra/typeorm/entities/Customer';
 import OrdersProducts from '@modules/orders/infra/typeorm/entities/OrdersProducts';
-import Product from '@modules/products/infra/typeorm/entities/Product';
 
 @Entity('orders')
 class Order {
@@ -26,7 +25,8 @@ class Order {
   customer_id: string;
 
   @OneToMany(() => OrdersProducts, orderProduct => orderProduct.order, {
-    eager: true,
+    cascade: true,
+    // eager: true,
   })
   orders_products: OrdersProducts[];
 
