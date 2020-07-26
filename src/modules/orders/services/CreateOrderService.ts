@@ -70,6 +70,8 @@ class CreateOrderService {
       });
     }
 
+    console.log(array_products);
+
     const order = await this.ordersRepository.create({
       customer,
       products: array_products,

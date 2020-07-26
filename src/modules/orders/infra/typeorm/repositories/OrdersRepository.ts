@@ -16,13 +16,13 @@ class OrdersRepository implements IOrdersRepository {
   }
 
   public async create({ customer, products }: ICreateOrderDTO): Promise<Order> {
-    console.log(products);
+    // console.log(products);
     const order = this.ormRepository.create({
       customer,
       orders_products: products,
     });
 
-    const order_products: OrdersProducts[] = [];
+    // const order_products: OrdersProducts[] = [];
 
     // for (const product of products) {
     //   const order_product = this.ormRepository2.create({
@@ -44,7 +44,7 @@ class OrdersRepository implements IOrdersRepository {
 
     await this.ormRepository.save(order);
 
-    order.orders_products = order_products;
+    // order.orders_products = order_products;
 
     return order;
   }
