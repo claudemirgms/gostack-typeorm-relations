@@ -28,7 +28,7 @@ class Order {
     cascade: true,
     // eager: true,
   })
-  orders_products: OrdersProducts[];
+  order_products: OrdersProducts[];
 
   @Column('timestamp with time zone')
   created_at: Date;

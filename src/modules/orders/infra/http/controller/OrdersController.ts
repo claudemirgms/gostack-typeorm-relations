@@ -4,12 +4,13 @@ import { container } from 'tsyringe';
 
 import CreateOrderService from '@modules/orders/services/CreateOrderService';
 import FindOrderService from '@modules/orders/services/FindOrderService';
+import Order from '../../typeorm/entities/Order';
 
 export default class OrdersController {
   public async show(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
     const findOrder = container.resolve(FindOrderService);
-    const order = findOrder.execute({ id });
+    const order = await findOrder.execute({ id });
     return response.json(order);
   }
 
@@ -17,6 +18,7 @@ export default class OrdersController {
     const { customer_id, products } = request.body;
     const createOrder = container.resolve(CreateOrderService);
     const order = await createOrder.execute({ customer_id, products });
+
     return response.json(order);
   }
 }

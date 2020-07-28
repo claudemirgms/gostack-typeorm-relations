@@ -58,7 +58,9 @@ export default class CreateTables1595257484204 implements MigrationInterface {
           },
           {
             name: 'price',
-            type: 'integer',
+            type: 'decimal',
+            precision: 5,
+            scale: 2,
           },
           {
             name: 'quantity',
@@ -116,7 +118,9 @@ export default class CreateTables1595257484204 implements MigrationInterface {
           },
           {
             name: 'price',
-            type: 'integer',
+            type: 'decimal',
+            precision: 5,
+            scale: 2,
           },
           {
             name: 'quantity',

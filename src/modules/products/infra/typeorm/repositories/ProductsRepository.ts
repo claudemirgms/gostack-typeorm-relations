@@ -3,6 +3,7 @@ import { getRepository, Repository, In } from 'typeorm';
 import IProductsRepository from '@modules/products/repositories/IProductsRepository';
 import ICreateProductDTO from '@modules/products/dtos/ICreateProductDTO';
 import IUpdateProductsQuantityDTO from '@modules/products/dtos/IUpdateProductsQuantityDTO';
+import AppError from '@shared/errors/AppError';
 import Product from '../entities/Product';
 
 interface IFindProducts {
@@ -44,7 +45,25 @@ class ProductsRepository implements IProductsRepository {
   public async updateQuantity(
     products: IUpdateProductsQuantityDTO[],
   ): Promise<Product[]> {
-    return [new Product()];
+    const arrayProducts: Product[] = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const product of products) {
+      const { id, quantity } = product;
+
+      // eslint-disable-next-line no-await-in-loop
+      const updateQuantity = await this.ormRepository.findOne(id);
+
+      if (!updateQuantity) {
+        throw new AppError('produto não encotrado');
+      }
+      updateQuantity.quantity = updateQuantity?.quantity - quantity;
+
+      // eslint-disable-next-line no-await-in-loop
+      await this.ormRepository.save(updateQuantity);
+
+      arrayProducts.push(updateQuantity);
+    }
+    return arrayProducts;
   }
 }
 

@@ -58,7 +58,6 @@ class CreateOrderService {
       if (!dado) {
         throw new AppError('produto não entrado');
       }
-      // console.log(dado);
 
       if (dado.quantity < product.quantity) {
         throw new AppError('sem produto em estoque');
@@ -70,14 +69,12 @@ class CreateOrderService {
       });
     }
 
-    console.log(array_products);
-
     const order = await this.ordersRepository.create({
       customer,
       products: array_products,
     });
 
-    console.log(order);
+    await this.productsRepository.updateQuantity(products);
 
     return order;
   }

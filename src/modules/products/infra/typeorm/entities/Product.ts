@@ -20,14 +20,14 @@ class Product {
   @Column()
   name: string;
 
-  @Column('integer')
+  @Column({ type: 'decimal', precision: 5, scale: 2 })
   price: number;
 
   @Column('integer')
   quantity: number;
 
   @ManyToMany(() => OrdersProducts, orderProduct => orderProduct.product)
-  orders_products: OrdersProducts[];
+  order_products: OrdersProducts[];
 
   @Column('timestamp with time zone')
   created_at: Date;
